@@ -17,7 +17,11 @@ import { logger, usageData } from 'pc-nrfconnect-shared';
 import { Environment } from '../../state';
 import EventAction from '../../usageDataActions';
 import { showConfirmRemoveDialog } from '../managerSlice';
-import { launchTerminal, launchWinBash } from '../nrfutil/terminal';
+import {
+    launchLinuxTerminal,
+    launchTerminal,
+    launchWinBash,
+} from '../nrfutil/terminal';
 import sdkPath from '../sdkPath';
 import { cloneNcs } from './effects/cloneNcs';
 import { install } from './effects/installEnvironment';
@@ -148,14 +152,17 @@ const EnvironmentMenu = ({ environment }: EnvironmentMenuProps) => {
                                 toolchainDir,
                                 version
                             );
-                        } else {
+                        } else if (process.platform === 'darwin') {
                             launchTerminal(environment.version);
+                        } else {
+                            launchLinuxTerminal(environment.version);
                         }
                     }}
                 >
                     Open Terminal
                 </Dropdown.Item>
             )}
+
             <Dropdown.Divider />
             <Dropdown.Item onClick={() => openDirectory(sdkDir())}>
                 Open SDK directory
